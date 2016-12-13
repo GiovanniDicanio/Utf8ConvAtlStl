@@ -8,7 +8,8 @@ This C++ project contains a _header-only_ module for UTF-8 (`std::string`) <-> U
 It makes sense to use `CStringW` at the Windows ATL/MFC level for UTF-16 text,
 and `std::string` e.g. in cross-platform C++ code storing UTF-8 text.
 
-This reusable header-only module (`Utf8Conv.h`) provides a couple of convenient conversion functions between
+This reusable header-only module ([`Utf8Conv.h`](https://github.com/GiovanniDicanio/Utf8ConvAtlStl/blob/master/Utf8ConvAtlStl/Utf8ConvAtlStl/Utf8Conv.h)) 
+provides a couple of convenient conversion functions between
 these two types of strings.
  
 Conversion errors are signaled using `AtlThrow()`, which [by default](https://msdn.microsoft.com/en-us/library/z325eyx0.aspx) translates
