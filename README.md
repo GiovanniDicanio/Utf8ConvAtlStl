@@ -1,5 +1,5 @@
 # Utf8ConvAtlStl
-C++ helper functions to convert between Unicode UTF-8 (`std::string`) and UTF-16 (`CStringW`)
+### C++ helper functions to convert between Unicode UTF-8 (`std::string`) and UTF-16 (`CStringW`)
 
 Giovanni Dicanio
 
@@ -24,5 +24,8 @@ of `std::wstring` for UTF-16 strings at the Windows platform level.
 
 This project contains also a unit-test for the reusable Unicode conversion module.
 
-Code developed using Visual Studio 2015.
+Code developed using Visual Studio 2015.  
 Compiles cleanly at `/W4` in both 32-bit builds and 64-bit builds.
+
+**Note for Older VC++ Compilers**  
+If you are using Visual Studio 2010, which doesn't support the C++11 `constexpr` keyword, you can still include this C++ code in your projects, simply substituting every instance of `constexpr` with `const`; this code will work just fine.
