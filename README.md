@@ -8,7 +8,7 @@ This C++ project contains a _header-only_ module for UTF-8 (`std::string`) <-> U
 It makes sense to use `CStringW` at the Windows ATL/MFC level for UTF-16 text,
 and `std::string` e.g. in cross-platform C++ code storing UTF-8 text.
 
-This reusable header-only module ([`Utf8Conv.h`](https://github.com/GiovanniDicanio/Utf8ConvAtlStl/blob/master/Utf8ConvAtlStl/Utf8ConvAtlStl/Utf8Conv.h)) 
+This **reusable header-only module** ([`Utf8Conv.h`](https://github.com/GiovanniDicanio/Utf8ConvAtlStl/blob/master/Utf8ConvAtlStl/Utf8ConvAtlStl/Utf8Conv.h)) 
 provides a couple of convenient conversion functions between
 these two types of strings.
  
@@ -22,9 +22,9 @@ For more details, please read [my MSDN Magazine article](https://msdn.microsoft.
 The code presented here is based on that article, but uses `CStringW` instead
 of `std::wstring` for UTF-16 strings at the Windows platform level.
 
-This project contains also a unit-test for the reusable Unicode conversion module.
+This project contains also a **unit-test** ([`Utf8ConvTest.cpp`](https://github.com/GiovanniDicanio/Utf8ConvAtlStl/blob/master/Utf8ConvAtlStl/Utf8ConvAtlStl/Utf8ConvTest.cpp)) for the reusable Unicode conversion module.
 
-Code developed using Visual Studio 2015.  
+Code developed using **Visual Studio 2015**.  
 Compiles cleanly at `/W4` in both 32-bit builds and 64-bit builds.
 
 **Note for Older VC++ Compilers**  
