@@ -67,7 +67,7 @@ namespace win32
 // On conversion errors (e.g. invalid UTF-8 sequence in input string), throws
 // using AtlThrow().
 //------------------------------------------------------------------------------
-inline CStringW Utf8ToUtf16(const std::string& utf8)
+inline CStringW Utf16FromUtf8(const std::string& utf8)
 {
     // Result of the conversion
     CStringW utf16; 
@@ -152,7 +152,7 @@ inline CStringW Utf8ToUtf16(const std::string& utf8)
 // On conversion errors (e.g. invalid UTF-16 sequence in input string), throws
 // using AtlThrow().
 //------------------------------------------------------------------------------
-inline std::string Utf16ToUtf8(const CStringW& utf16)
+inline std::string Utf8FromUtf16(const CStringW& utf16)
 {
     // Result of the conversion
     std::string utf8;

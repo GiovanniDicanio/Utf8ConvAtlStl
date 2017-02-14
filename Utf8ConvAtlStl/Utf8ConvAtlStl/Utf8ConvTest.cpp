@@ -115,16 +115,16 @@ int main()
 void TestBasicConversionsWithStlStrings()
 {
     CStringW s1u16 = L"Hello world";
-    std::string s1u8 = win32::Utf16ToUtf8(s1u16);
-    CStringW s1u16back = win32::Utf8ToUtf16(s1u8);
+    std::string s1u8 = win32::Utf8FromUtf16(s1u16);
+    CStringW s1u16back = win32::Utf16FromUtf8(s1u8);
     if (s1u16back != s1u16)
     {
         TEST_ERROR("Converting from UTF-16 to UTF-8 and back gives different string.");
     }
 
     std::string s2u8 = "Ciao ciao";
-    CStringW s2u16 = win32::Utf8ToUtf16(s2u8);
-    std::string s2u8back = win32::Utf16ToUtf8(s2u16);
+    CStringW s2u16 = win32::Utf16FromUtf8(s2u8);
+    std::string s2u8back = win32::Utf8FromUtf16(s2u16);
     if (s2u8back != s2u8)
     {
         TEST_ERROR("Converting from UTF-8 to UTF-16 and back gives different string.");
@@ -135,16 +135,16 @@ void TestBasicConversionsWithStlStrings()
 void TestBasicConversionWithRawPointers()
 {
     const wchar_t* const s1u16 = L"Hello world";
-    std::string s1u8 = win32::Utf16ToUtf8(s1u16);
-    CStringW s1u16back = win32::Utf8ToUtf16(s1u8);
+    std::string s1u8 = win32::Utf8FromUtf16(s1u16);
+    CStringW s1u16back = win32::Utf16FromUtf8(s1u8);
     if (s1u16back != s1u16)
     {
         TEST_ERROR("Converting raw pointers from UTF-16 to UTF-8 and back gives different string.");
     }
 
     const char* const s2u8 = "Ciao ciao";
-    CStringW s2u16 = win32::Utf8ToUtf16(s2u8);
-    std::string s2u8back = win32::Utf16ToUtf8(s2u16);
+    CStringW s2u16 = win32::Utf16FromUtf8(s2u8);
+    std::string s2u8back = win32::Utf8FromUtf16(s2u16);
     if (s2u8back != s2u8)
     {
         TEST_ERROR("Converting raw pointers from UTF-8 to UTF-16 and back gives different string.");
@@ -157,22 +157,22 @@ void TestEmptyStringConversions()
     const CStringW u16empty;
     const std::string u8empty;
 
-    if (!win32::Utf16ToUtf8(u16empty).empty())
+    if (!win32::Utf8FromUtf16(u16empty).empty())
     {
         TEST_ERROR("Empty UTF-16 string is not converted to an empty UTF-8.");
     }
 
-    if (!win32::Utf8ToUtf16(u8empty).IsEmpty())
+    if (!win32::Utf16FromUtf8(u8empty).IsEmpty())
     {
         TEST_ERROR("Empty UTF-8 string is not converted to an empty UTF-16.");
     }
 
-    if (!win32::Utf16ToUtf8(L"").empty())
+    if (!win32::Utf8FromUtf16(L"").empty())
     {
         TEST_ERROR("Empty UTF-16 raw string ptr is not converted to an empty UTF-8.");
     }
 
-    if (!win32::Utf8ToUtf16("").IsEmpty())
+    if (!win32::Utf16FromUtf8("").IsEmpty())
     {
         TEST_ERROR("Empty UTF-8 raw string ptr is not converted to an empty UTF-16.");
     }
@@ -189,12 +189,12 @@ void TestJapaneseKin()
 
     const std::string kinU8 = "\xE9\x87\x91";
     const CStringW kinU16 = L"\x91D1";
-    if (win32::Utf8ToUtf16(kinU8) != kinU16)
+    if (win32::Utf16FromUtf8(kinU8) != kinU16)
     {
         TEST_ERROR("Converting Japanese 'kin' from UTF-8 to UTF-16 failed.");
     }
 
-    if (win32::Utf16ToUtf8(kinU16) != kinU8)
+    if (win32::Utf8FromUtf16(kinU16) != kinU8)
     {
         TEST_ERROR("Converting Japanese 'kin' from UTF-16 to UTF-8 failed.");
     }
@@ -210,7 +210,7 @@ void TestInvalidUnicodeSequences()
 
         // The following line should throw because of invalid UTF-8 sequence
         // in input string
-        CStringW invalidUtf16 = win32::Utf8ToUtf16(invalidUtf8);
+        CStringW invalidUtf16 = win32::Utf16FromUtf8(invalidUtf8);
 
         // Correct throwing code should *not* get here:
         TEST_ERROR("CAtlException not thrown in presence of invalid UTF-8.");
@@ -231,7 +231,7 @@ void TestInvalidUnicodeSequences()
 
         // The following line should throw because of invalid UTF-16 sequence
         // in input string
-        std::string invalidUtf8 = win32::Utf16ToUtf8(invalidUtf16);
+        std::string invalidUtf8 = win32::Utf8FromUtf16(invalidUtf16);
 
         // Correct throwing code should *not* get here:
         TEST_ERROR("CAtlException not thrown in presence of invalid UTF-16.");
@@ -257,7 +257,7 @@ void TestGiganticStrings()
         const std::string hugeUtf8(5 * giga, 'C');
         
         // This code should throw because of the gigantic std::string 
-        CStringW hugeUtf16 = win32::Utf8ToUtf16(hugeUtf8);
+        CStringW hugeUtf16 = win32::Utf16FromUtf8(hugeUtf8);
 
         // Correct code should *not* get here:
         TEST_ERROR("CAtlException not thrown in presence of UTF-8 string whose length can't fit into an int.");
