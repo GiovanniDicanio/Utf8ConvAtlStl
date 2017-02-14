@@ -260,13 +260,34 @@ void TestGiganticStrings()
     catch (const win32::Utf8ConversionException& e)
     {
         // All right
-        printf("\nHuge UTF-8 string throwing exception as expected; error code=%lu\n", 
+        printf("\nHuge UTF-8 string throwing exception as expected; error code=%lu.\n", 
             e.ErrorCode());
     }
 
     // NOTE:
     // Can't have a huge CStringW, as CString's lengths are expressed using int 
     // (i.e. signed integers; not size_t).
+    // However, can build a huge std::wstring, and pass [start, finish) to the conversion function.
+    try
+    {
+        // Build a gigantic std::wstring
+        constexpr size_t giga = 1ULL * 1024 * 1024 * 1024;
+        const std::wstring hugeUtf16(5 * giga, L'C');
+
+        // This code should throw because of the gigantic std::wstring 
+        const wchar_t * const utf16Start = hugeUtf16.data();
+        const wchar_t * const utf16Finish = utf16Start + hugeUtf16.length();
+        std::string hugeUtf8 = win32::Utf8FromUtf16(utf16Start, utf16Finish);
+
+        // Correct code should *not* get here:
+        TEST_ERROR("Exception not thrown in presence of UTF-16 string whose length can't fit into an int.");
+    }
+    catch (const win32::Utf8ConversionException& e)
+    {
+        // All right
+        printf("\nHuge UTF-16 string throwing exception as expected; error code=%lu.\n",
+            e.ErrorCode());
+    }
 }
 #endif // TEST_GIGANTIC_STRINGS
 
