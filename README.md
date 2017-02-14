@@ -12,8 +12,7 @@ This **reusable header-only module** ([`Utf8Conv.h`](https://github.com/Giovanni
 provides a couple of convenient conversion functions between
 these two types of strings.
  
-Conversion errors are signaled using `AtlThrow()`, which [by default](https://msdn.microsoft.com/en-us/library/z325eyx0.aspx) translates
-to throwing `CAtlException` instances.
+Conversion errors are signaled throwing instances of a custom exception class.
  
 For more details, please read [my MSDN Magazine article](https://msdn.microsoft.com/magazine/mt763237):
  

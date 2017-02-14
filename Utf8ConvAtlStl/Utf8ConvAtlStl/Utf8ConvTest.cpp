@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Utf8ConvTest.cpp -- Copyright (C) by Giovanni Dicanio
+// Utf8onvTest.cpp -- Copyright (C) by Giovanni Dicanio
 //
 // Unit Test for the UTF-8 encoding conversion functions.
 //
@@ -75,11 +75,6 @@ int main()
         printf("\nTesting UTF-8/UTF-16 STL/ATL Conversion Helpers\n");
         printf("           -- by Giovanni Dicanio --\n\n");
         RunTests();
-    }
-    catch (const CAtlException& e)
-    {
-        printf("\n*** FATAL: CAtlException; hr=0x%08X\n", static_cast<HRESULT>(e));
-        exitCode = kExitError;
     }
     catch (const std::exception& e)
     {
@@ -213,12 +208,12 @@ void TestInvalidUnicodeSequences()
         CStringW invalidUtf16 = win32::Utf16FromUtf8(invalidUtf8);
 
         // Correct throwing code should *not* get here:
-        TEST_ERROR("CAtlException not thrown in presence of invalid UTF-8.");
+        TEST_ERROR("Exception not thrown in presence of invalid UTF-8.");
     }
-    catch (const CAtlException& e)
+    catch (const win32::Utf8ConversionException& e)
     {
-        const HRESULT expectedErrorCode = HRESULT_FROM_WIN32(ERROR_NO_UNICODE_TRANSLATION);
-        if (static_cast<HRESULT>(e) != expectedErrorCode)
+        const DWORD expectedErrorCode = ERROR_NO_UNICODE_TRANSLATION;
+        if (e.ErrorCode() != expectedErrorCode)
         {
             TEST_ERROR("Error code different than ERROR_NO_UNICODE_TRANSLATION.");
         }
@@ -234,12 +229,12 @@ void TestInvalidUnicodeSequences()
         std::string invalidUtf8 = win32::Utf8FromUtf16(invalidUtf16);
 
         // Correct throwing code should *not* get here:
-        TEST_ERROR("CAtlException not thrown in presence of invalid UTF-16.");
+        TEST_ERROR("Exception not thrown in presence of invalid UTF-16.");
     }
-    catch (const CAtlException& e)
+    catch (const win32::Utf8ConversionException& e)
     {
-        const HRESULT expectedErrorCode = HRESULT_FROM_WIN32(ERROR_NO_UNICODE_TRANSLATION);
-        if (static_cast<HRESULT>(e) != expectedErrorCode)
+        const DWORD expectedErrorCode = ERROR_NO_UNICODE_TRANSLATION;
+        if (e.ErrorCode() != expectedErrorCode)
         {
             TEST_ERROR("Error code different than ERROR_NO_UNICODE_TRANSLATION.");
         }
@@ -260,13 +255,13 @@ void TestGiganticStrings()
         CStringW hugeUtf16 = win32::Utf16FromUtf8(hugeUtf8);
 
         // Correct code should *not* get here:
-        TEST_ERROR("CAtlException not thrown in presence of UTF-8 string whose length can't fit into an int.");
+        TEST_ERROR("Exception not thrown in presence of UTF-8 string whose length can't fit into an int.");
     }
-    catch (const CAtlException& e)
+    catch (const win32::Utf8ConversionException& e)
     {
         // All right
-        printf("\nHuge UTF-8 string throwing CAtlException as expected; hr=0x%08X\n", 
-            static_cast<HRESULT>(e));
+        printf("\nHuge UTF-8 string throwing exception as expected; error code=%lu\n", 
+            e.ErrorCode());
     }
 
     // NOTE:

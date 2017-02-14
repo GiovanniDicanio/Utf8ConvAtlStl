@@ -16,10 +16,10 @@
 // This header-only module provides a couple of conversion functions between
 // these two types of strings.
 // 
-// Conversion errors are signaled using AtlThrow(), which by default translates
-// to throwing CAtlException instances (http://bit.ly/2gDimX0).
+// Conversion errors are signaled using an /ad hoc/ exception class:
+// Utf8ConversionException (derived from std::runtime_error).
 // 
-// For more details, please read my MSDN Magazine article:
+// For more details on the conversion process, please read my MSDN Magazine article:
 // 
 //      C++ - Unicode Encoding Conversions with STL Strings and Win32 APIs
 //      https://msdn.microsoft.com/magazine/mt763237
@@ -45,11 +45,11 @@
 #include <Windows.h>    // Win32 Platform SDK main header        
 
 #include <limits>       // For std::numeric_limits
+#include <stdexcept>    // For std::runtime_error
 #include <string>       // For std::string (UTF-8)
 
-#include <atldef.h>     // For ATLASSERT, AtlThrow
+#include <atldef.h>     // For ATLASSERT
 #include <atlstr.h>     // For CStringW (UTF-16)
-#include <atltrace.h>   // For ATLTRACE
 
 
 namespace GiovanniDicanio
@@ -59,13 +59,48 @@ namespace win32
 {
 
 //------------------------------------------------------------------------------
+// Exception class representing a conversion error between UTF-8 and UTF-16.
+//------------------------------------------------------------------------------
+class Utf8ConversionException
+    : public std::runtime_error
+{
+public:
+
+    // Create the exception object from error message and error code.
+    Utf8ConversionException(const char* message, DWORD errorCode)
+        : std::runtime_error(message)
+        , m_errorCode(errorCode)
+    {}
+
+    // Create the exception object from error message and error code.
+    Utf8ConversionException(const std::string& message, DWORD errorCode)
+        : std::runtime_error(message)
+        , m_errorCode(errorCode)
+    {}
+
+    // Conversion error code (as returned by GetLastError).
+    DWORD ErrorCode() const
+    {
+        return m_errorCode;
+    }
+
+
+    // *** PRIVATE IMPLEMENTATION ***
+
+private:
+    // Error code as returned by GetLastError
+    DWORD m_errorCode;
+};
+
+
+//------------------------------------------------------------------------------
 // Convert form UTF-8 to UTF-16.
 //
 // UTF-8 strings are stored using std::string.
 // UTF-16 strings are stored in CStringW.
 // 
 // On conversion errors (e.g. invalid UTF-8 sequence in input string), throws
-// using AtlThrow().
+// Utf8ConversionException.
 //------------------------------------------------------------------------------
 inline CStringW Utf16FromUtf8(const std::string& utf8)
 {
@@ -91,8 +126,9 @@ inline CStringW Utf16FromUtf8(const std::string& utf8)
     // converted to *negative* integers.
     if (utf8.length() > static_cast<size_t>((std::numeric_limits<int>::max)())) 
     {
-        ATLTRACE("Input string too long: size_t-length doesn't fit into int.\n");
-        AtlThrow(E_INVALIDARG);
+        throw Utf8ConversionException(
+            "Input string too long: size_t-length doesn't fit into int.\n", 
+            ERROR_INVALID_PARAMETER);
     }
 
     const int utf8Length = static_cast<int>(utf8.length());
@@ -110,8 +146,9 @@ inline CStringW Utf16FromUtf8(const std::string& utf8)
     {
         // Conversion error: capture error code and throw
         const DWORD error = ::GetLastError();
-        ATLTRACE("Error in attempting conversion from UTF-8 to UTF-16.\n");
-        AtlThrow(HRESULT_FROM_WIN32(error));
+        throw Utf8ConversionException(
+            "Error in converting from UTF-8 to UTF-16.\n",
+            error);
     }
 
     // Make room in the destination string for the converted bits
@@ -131,8 +168,9 @@ inline CStringW Utf16FromUtf8(const std::string& utf8)
     {
         // Conversion error: capture error code and throw
         const DWORD error = ::GetLastError();
-        ATLTRACE("Error in attempting conversion from UTF-8 to UTF-16.\n");
-        AtlThrow(HRESULT_FROM_WIN32(error));
+        throw Utf8ConversionException(
+            "Error in converting from UTF-8 to UTF-16.\n",
+            error);
     }
 
     // Don't forget to release the internal CString's buffer
@@ -150,7 +188,7 @@ inline CStringW Utf16FromUtf8(const std::string& utf8)
 // UTF-8 strings are stored using std::string.
 // 
 // On conversion errors (e.g. invalid UTF-16 sequence in input string), throws
-// using AtlThrow().
+// Utf8ConversionException.
 //------------------------------------------------------------------------------
 inline std::string Utf8FromUtf16(const CStringW& utf16)
 {
@@ -183,8 +221,9 @@ inline std::string Utf8FromUtf16(const CStringW& utf16)
     {
         // Conversion error: capture error code and throw
         const DWORD error = ::GetLastError();
-        ATLTRACE("Error in attempting conversion from UTF-16 to UTF-8.\n");
-        AtlThrow(HRESULT_FROM_WIN32(error));
+        throw Utf8ConversionException(
+            "Error in converting from UTF-16 to UTF-8.\n",
+            error);
     }
 
     // Make room in the destination string for the converted bits
@@ -204,8 +243,9 @@ inline std::string Utf8FromUtf16(const CStringW& utf16)
     {
         // Conversion error: capture error code and throw
         const DWORD error = ::GetLastError();
-        ATLTRACE("Error in attempting conversion from UTF-16 to UTF-8.\n");
-        AtlThrow(HRESULT_FROM_WIN32(error));
+        throw Utf8ConversionException(
+            "Error in converting from UTF-16 to UTF-8.\n",
+            error);
     }
 
     // Return the converted result string
