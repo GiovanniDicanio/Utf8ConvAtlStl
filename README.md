@@ -21,6 +21,9 @@ For more details, please read [my MSDN Magazine article](https://msdn.microsoft.
 The code presented here is based on that article, but uses `CStringW` instead
 of `std::wstring` for UTF-16 strings at the Windows platform level.
 
+In addition, it's also possible to pass input source strings using an STL-style `[start, finish)` _range_
+(this is useful for converting portions, or _views_, of source strings).
+
 This project contains also a **unit-test** ([`Utf8ConvTest.cpp`](https://github.com/GiovanniDicanio/Utf8ConvAtlStl/blob/master/Utf8ConvAtlStl/Utf8ConvAtlStl/Utf8ConvTest.cpp)) for the reusable Unicode conversion module.
 
 Code developed using **Visual Studio 2015**.  
