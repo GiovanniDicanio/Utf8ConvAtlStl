@@ -8,11 +8,11 @@
 
 
 #include "Utf8Conv.h"   // UTF-8 conversion functions to test
-#include <stdio.h>      // For console output
+#include <iostream>     // For console output
 #include <exception>    // For std::exception
 
 using namespace GiovanniDicanio;
-
+using std::cout;
 
 //
 // Tests with gigantic strings (whose lengths expressed in size_t can't fit
@@ -35,7 +35,7 @@ namespace
 //------------------------------------------------------------------------------
 void PrintTestError(const char* const file, const int line, const char* const msg)
 {
-    printf("[ERROR] %s (%d): %s\n", file, line, msg);
+    cout << "[ERROR] " << file << " (" << line << "): " << msg << '\n';
 }
 
 } // anonymous namespace
@@ -72,31 +72,31 @@ int main()
 
     try
     {
-        printf("\nTesting UTF-8/UTF-16 STL/ATL Conversion Helpers\n");
-        printf("           -- by Giovanni Dicanio --\n\n");
+        cout << "\nTesting UTF-8/UTF-16 STL/ATL Conversion Helpers\n";
+        cout << "           -- by Giovanni Dicanio --\n\n";
         RunTests();
     }
     catch (const std::exception& e)
     {
-        printf("\n*** FATAL: std::exception; what(): %s\n", e.what());
+        cout << "\n*** FATAL: std::exception; what(): " << e.what() << '\n';
         exitCode = kExitError;
     }
     catch (...)
     {
-        printf("\n*** FATAL: Unknown C++ exception.\n");
+        cout << "\n*** FATAL: Unknown C++ exception.\n";
         exitCode = kExitError;
     }
 
     if (g_testErrors != 0)
     {
-        printf("\n*** %d error(s) detected.\n", g_testErrors);
+        cout << "\n*** " << g_testErrors << " error(s) detected.\n";
         exitCode = kExitError;
     }
 
     if (exitCode == kExitOk)
     {
         // All right!! :)
-        printf("\n*** No errors detected! :) ***\n");
+        cout << "\n*** No errors detected! :) ***\n";
     }
 
     return exitCode;
@@ -260,8 +260,8 @@ void TestGiganticStrings()
     catch (const win32::Utf8ConversionException& e)
     {
         // All right
-        printf("\nHuge UTF-8 string throwing exception as expected; error code=%lu.\n", 
-            e.ErrorCode());
+        cout << "\nHuge UTF-8 string throwing exception as expected; error code=" << e.ErrorCode()
+             << ".\n";
     }
 
     // NOTE:
@@ -285,8 +285,8 @@ void TestGiganticStrings()
     catch (const win32::Utf8ConversionException& e)
     {
         // All right
-        printf("\nHuge UTF-16 string throwing exception as expected; error code=%lu.\n",
-            e.ErrorCode());
+        cout << "\nHuge UTF-16 string throwing exception as expected; error code=" << e.ErrorCode()
+            << ".\n";
     }
 }
 #endif // TEST_GIGANTIC_STRINGS
